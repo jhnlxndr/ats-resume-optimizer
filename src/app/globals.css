@@ -3,6 +3,24 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Hoja de vida: valores por defecto (paleta slate-blue + fuente lato). Los sobrescribe
+     [data-cv-palette]/[data-cv-font] en el contenedor del documento — ver ResumeBaseCandidate
+     y src/app/ui/resume-theme. */
+  --cv-ink: #1e293b;
+  --cv-ink-soft: #475569;
+  --cv-accent: #1e3a8a;
+  --cv-rule: #cbd5e1;
+  --cv-font-family: var(--font-cv-lato), Lato, Calibri, Carlito, Arial, sans-serif;
+  --cv-body-adjust: 0pt;
+
+  /* Escala tipográfica de la hoja de vida: fija para todas las paletas y fuentes. */
+  --cv-size-name: 21pt;
+  --cv-size-title: 11.5pt;
+  --cv-size-section: 10.5pt;
+  --cv-size-heading: 10.8pt;
+  --cv-size-meta: 9.5pt;
+  --cv-size-body: 10.5pt;
 }
 
 @theme inline {
@@ -10,6 +28,15 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Expone los 4 tokens semánticos de la hoja de vida como utilidades de Tailwind
+     (text-cv-ink, border-cv-rule, etc.) sin fijar su valor: siguen leyendo la variable
+     runtime de arriba, que [data-cv-palette] reescribe en el contenedor del documento. */
+  --color-cv-ink: var(--cv-ink);
+  --color-cv-ink-soft: var(--cv-ink-soft);
+  --color-cv-accent: var(--cv-accent);
+  --color-cv-rule: var(--cv-rule);
+  --font-cv: var(--cv-font-family);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +50,98 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* --- Paletas de la hoja de vida: agrega una cuarta duplicando uno de estos bloques --- */
+[data-cv-palette="slate-blue"] {
+  --cv-ink: #1e293b;
+  --cv-ink-soft: #475569;
+  --cv-accent: #1e3a8a;
+  --cv-rule: #cbd5e1;
+}
+
+[data-cv-palette="warm-graphite"] {
+  --cv-ink: #292524;
+  --cv-ink-soft: #57534e;
+  --cv-accent: #1c1917;
+  --cv-rule: #d6d3d1;
+}
+
+[data-cv-palette="teal-modern"] {
+  --cv-ink: #1e293b;
+  --cv-ink-soft: #475569;
+  --cv-accent: #115e59;
+  --cv-rule: #cbd5e1;
+}
+
+/* --- Tipografías de la hoja de vida --- */
+[data-cv-font="lato"] {
+  --cv-font-family: var(--font-cv-lato), Lato, Calibri, Carlito, Arial, sans-serif;
+  --cv-body-adjust: 0pt;
+}
+
+[data-cv-font="source-sans"] {
+  --cv-font-family: var(--font-cv-source-sans), "Source Sans 3", Calibri, Carlito, Arial, sans-serif;
+  --cv-body-adjust: 0pt;
+}
+
+[data-cv-font="gelasio"] {
+  --cv-font-family: var(--font-cv-gelasio), Gelasio, Georgia, "Times New Roman", serif;
+  --cv-body-adjust: 0.3pt;
+}
+
+[data-cv-font="eb-garamond"] {
+  --cv-font-family: var(--font-cv-eb-garamond), "EB Garamond", Garamond, Georgia, serif;
+  --cv-body-adjust: 0.3pt;
+}
+
+/* --- Escala tipográfica de la hoja de vida: tamaño/peso por rol semántico, no por
+   componente. La jerarquía la dan el peso/color/espacio; solo el nombre sale de este rango. --- */
+.cv-name {
+  font-size: var(--cv-size-name);
+  font-weight: 700;
+}
+
+.cv-title {
+  font-size: var(--cv-size-title);
+  font-weight: 600;
+}
+
+.cv-section-title {
+  font-size: var(--cv-size-section);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.cv-heading {
+  font-size: var(--cv-size-heading);
+  font-weight: 700;
+}
+
+.cv-meta {
+  font-size: var(--cv-size-meta);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.cv-body {
+  font-size: calc(var(--cv-size-body) + var(--cv-body-adjust));
+  font-weight: 400;
+  line-height: 1.42;
+}
+
+.cv-entry {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Hoja de vida imprimible: tamaño de página estándar. Cambia "size" a A4 si lo necesitas. */
+@media print {
+  @page {
+    size: Letter;
+    margin: 1.4cm 1.6cm;
+  }
 }
