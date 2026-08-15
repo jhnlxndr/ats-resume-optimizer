@@ -1,0 +1,14 @@
+### POST request to example server
+POST http://localhost:3000/api/candidates
+Content-Type: application/json
+
+{
+    "fullName": "Johan Londoño",
+    "email": "johan@example.com",
+    "phone": "3001234567",
+    "city": "Pereira",
+    "country": "Colombia",
+    "portfolio": "https://example.com"
+}
+
+###
