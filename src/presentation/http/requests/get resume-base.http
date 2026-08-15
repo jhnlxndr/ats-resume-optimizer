@@ -1,0 +1,8 @@
+### GET request to example server (by candidateId)
+GET http://localhost:3000/api/resume-bases?candidateId=2362a7e8-0e98-4084-bff1-36603362b001
+
+###
+### GET request to example server (by candidateEmail)
+GET http://localhost:3000/api/resume-bases?candidateEmail=johan.1786335319164@gmail.com
+
+###

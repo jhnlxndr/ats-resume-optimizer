@@ -1,0 +1,36 @@
+### POST request to example server
+POST http://localhost:3000/api/resume-bases
+Content-Type: application/json
+
+{
+    "candidateId": "2362a7e8-0e98-4084-bff1-36603362b001",
+    "profession": "Software Engineer",
+    "aboutMe": "Backend developer with 5 years of experience",
+    "salaryAspiration": 5000000,
+    "salaryCurrency": "COP",
+    "educations": [
+        {
+            "type": "Academic",
+            "title": "Systems Engineering",
+            "academy": "Universidad Tecnológica de Pereira",
+            "startDate": "2015-01-01",
+            "finishDate": "2020-12-01",
+            "isCurrent": false
+        }
+    ],
+    "experiences": [
+        {
+            "startDate": "2021-01-01",
+            "company": "Acme Corp",
+            "position": "Backend Developer",
+            "responsibilities": [
+                { "description": "Built the payments service that increased checkout conversion by 12%" }
+            ]
+        }
+    ],
+    "languages": [
+        { "title": "English", "level": "B2", "academy": "Self-taught" }
+    ]
+}
+
+###
