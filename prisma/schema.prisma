@@ -1,0 +1,213 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Candidate {
+  id             String            @id @default(uuid())
+  fullName       String
+  email          String            @unique
+  phone          String
+  secondaryPhone String?
+  city           String
+  country        String
+  portfolio      String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  resumeBase     ResumeBase?
+  resumes        OptimizedResume[]
+}
+
+model ResumeBase {
+  id                  String            @id @default(uuid())
+  candidate           Candidate         @relation(fields: [candidateId], references: [id])
+  candidateId         String            @unique
+  profession          String
+  aboutMe             String?
+  professionalProfile String?
+  salaryAspiration    Int
+  salaryCurrency      String
+  educations          Education[]
+  // certifications      Certification[]
+  // skills              Skill[]
+  experiences         Experience[]
+  projects            Project[]
+  languages           Language[]
+  references          Reference[]
+  skills              ResumeBaseSkill[]
+}
+
+enum EducationType {
+  Academic
+  Course
+  Bootcamp
+  Certification
+}
+
+model Education {
+  id             String        @id @default(uuid())
+  resumeBase     ResumeBase    @relation(fields: [resumeBaseId], references: [id])
+  resumeBaseId   String
+  type           EducationType
+  title          String
+  description    String?
+  academy        String
+  linkCredential String?
+  startDate      DateTime
+  finishDate     DateTime?
+  isCurrent      Boolean
+}
+
+// model Certification {
+//   id           String      @id @default(uuid())
+//   resumeBase   ResumeBase? @relation(fields: [resumeBaseId], references: [id])
+//   resumeBaseId String?
+//   title        String
+//   academy      String
+//   startDate    DateTime
+//   finishDate   DateTime?
+//   isCurrent    Boolean
+// }
+
+enum SkillCategory {
+  Technical
+  Soft
+  Language
+  Tool
+  Backend
+  Frontend
+  DevOps
+  Database
+  Cloud
+  SoftSkills
+  Agile
+}
+
+model Skill {
+  id          String            @id @default(uuid())
+  name        String            @unique
+  description String
+  category    SkillCategory
+  resumes     ResumeBaseSkill[]
+  jobOffers   JobOfferSkill[]
+}
+
+model ResumeBaseSkill {
+  id              String     @id @default(uuid())
+  resumeBaseId    String
+  skillId         String
+  resumeBase      ResumeBase @relation(fields: [resumeBaseId], references: [id])
+  skill           Skill      @relation(fields: [skillId], references: [id])
+  level           String?
+  yearsExperience Int?
+  evidence        String?
+}
+
+model Experience {
+  id               String           @id @default(uuid())
+  resumeBase       ResumeBase       @relation(fields: [resumeBaseId], references: [id])
+  resumeBaseId     String
+  startDate        DateTime
+  finishDate       DateTime?
+  company          String
+  position         String
+  responsibilities Responsibility[] // La primer responsabilidad debe dar el contexto de lo que hizo en la compañía. La intención es que se aplique la fórmula: logré X haciendo Y con el resultado Z. Cada responsabilidad contiene esta fórmula.
+}
+
+model Responsibility {
+  id           String     @id @default(uuid())
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  experienceId String
+  description  String
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  resumeBase   ResumeBase    @relation(fields: [resumeBaseId], references: [id])
+  resumeBaseId String
+  title        String
+  role         String
+  achievements Achievement[]
+}
+
+model Achievement {
+  id          String  @id @default(uuid())
+  project     Project @relation(fields: [projectId], references: [id])
+  projectId   String
+  description String
+  metric      String?
+  evidence    String
+}
+
+enum LanguageLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+  Native
+}
+
+model Language {
+  id           String        @id @default(uuid())
+  resumeBase   ResumeBase    @relation(fields: [resumeBaseId], references: [id])
+  resumeBaseId String
+  title        String
+  level        LanguageLevel
+  academy      String
+  evidence     String?
+}
+
+model Reference {
+  id               String     @id @default(uuid())
+  resumeBase       ResumeBase @relation(fields: [resumeBaseId], references: [id])
+  resumeBaseId     String
+  fullName         String
+  phone            String
+  companyOrProject String
+}
+
+model JobOffer {
+  id                String           @id @default(uuid())
+  optimizedResume   OptimizedResume?
+  position          String
+  date              DateTime
+  company           String
+  skills            JobOfferSkill[]
+  minEducation      String
+  minExperienceTime Int
+  description       String
+}
+
+model JobOfferSkill {
+  skill         Skill    @relation(fields: [skillId], references: [id])
+  jobOffer      JobOffer @relation(fields: [jobOfferId], references: [id])
+  skillId       String
+  jobOfferId    String
+  required      Boolean?
+  priority      Int?
+  yearsRequired Int?
+
+  @@id([jobOfferId, skillId])
+}
+
+model OptimizedResume {
+  id              String    @id @default(uuid())
+  jobOffer        JobOffer  @relation(fields: [jobOfferId], references: [id])
+  jobOfferId      String    @unique
+  candidate       Candidate @relation(fields: [candidateId], references: [id])
+  candidateId     String
+  score           Int
+  recommendations String
+  analysis        String
+}
